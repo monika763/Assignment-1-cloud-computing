@@ -59,12 +59,72 @@ assignment1/
 ```bash
 git clone https://github.com/amar-at-iitm/cs6847_assignment1
 cd cs6847_assignment1
-## Key Workflows
+# ==============================
+# 1. Build & Test Locally
+# ==============================
+
 # Install dependencies
 pip install -r app/requirements.txt
 
-# Run locally
+# Run Flask app locally
 python app/app.py
+
+
+# ==============================
+# 2. Docker Swarm
+# ==============================
+
+# Build Docker image
+docker build -t flask-app:latest app/
+
+# Initialize Swarm
+docker swarm init
+
+# Deploy service with 3 replicas
+docker service create --name flask-swarm --replicas 3 -p 5000:5000 flask-app:latest
+
+# Check service status
+docker service ls
+docker ps
+
+
+# ==============================
+# 3. Kubernetes (Minikube)
+# ==============================
+
+# Start Minikube
+minikube start
+
+# Point Docker to Minikube
+eval $(minikube docker-env)
+
+# Build image inside Minikube
+docker build -t flask-app:latest app/
+
+# Deploy manifests (deployment, service, hpa)
+kubectl apply -f kubernetes/
+
+# Verify deployment
+kubectl get pods
+kubectl get svc
+
+# Get service URL
+minikube service flask-service --url
+
+
+# ==============================
+# 4. Client Testing
+# ==============================
+
+cd client
+
+# Run tests against Docker service
+python client.py --target http://<DOCKER_IP>:5000 --rate 10 --output ../results/docker_response_10
+python client.py --target http://<DOCKER_IP>:5000 --rate 10000 --output ../results/docker_response_10000
+
+# Run tests against Kubernetes service
+python client.py --target http://<K8S_URL> --rate 10 --output ../results/kubernetes_response_10
+python client.py --target http://<K8S_URL> --rate 10000 --output ../results/kubernetes_response_10000
 
 
 
