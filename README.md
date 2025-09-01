@@ -1,45 +1,46 @@
 # cs6847 Assignment 1 – Docker Swarm & Kubernetes Deployment with Client Testing
 
 ## Project Overview
-This assignment showcases how to deploy a small **Flask-based web service** using both **Docker Swarm** and **Kubernetes (Minikube)**.  
-It also includes a lightweight **Python client** for performing load testing. The project is designed so that experiments and benchmarks can be repeated easily.
+This project demonstrates how to containerize and deploy a small **Flask-based API service** using both **Docker Swarm** and **Kubernetes (Minikube)**.  
+It also includes a simple **Python client** that can generate traffic for benchmarking.  
+The goal is to provide a reproducible workflow for experimenting with scaling and performance testing.  
 
 ---
 
 ## Requirements
-- Docker & Docker Swarm
-- Minikube (for Kubernetes testing)
-- Python 3.11 or newer
-- Virtual environment setup (recommended)
+- Docker installed (with Swarm mode enabled)  
+- Minikube (for running Kubernetes locally)  
+- Python 3.11+  
+- A virtual environment for Python dependencies (recommended)  
 
 ---
 
 ## Folder Structure
-assignment1/
+assignment1/  
 
-│── .dockerignore              # Skip unnecessary files in build  
-│── .gitignore                 
-│── run_swarm_test.sh  
-│── run_k8s_test.sh  
-│── run_all_tests.sh  
-│── README.md                  
+│── .dockerignore              # Excludes unnecessary files from Docker builds  
+│── .gitignore                 # Git ignored files  
+│── run_swarm_test.sh          # Helper script for Docker Swarm test  
+│── run_k8s_test.sh            # Helper script for Kubernetes test  
+│── run_all_tests.sh           # Runs all tests together  
+│── README.md                  # Documentation  
 │  
-├── app/                       # Core web service (Flask app)  
-│   ├── requirements.txt                  
-│   ├── app.py                 # Flask entrypoint  
-│   ├── Dockerfile             # Image build instructions  
-│   └── __init__.py            # Empty file, keeps directory as a package  
+├── app/                       # Flask web service code  
+│   ├── requirements.txt        # Python package list  
+│   ├── app.py                  # Main entrypoint  
+│   ├── Dockerfile              # Image build instructions  
+│   └── __init__.py             # Marks package directory  
 │  
-├── kubernetes/                # Kubernetes deployment configs  
-│   ├── deployment.yaml        # Deployment with at least 3 replicas  
-│   ├── hpa.yaml               # Horizontal Pod Autoscaler (scales up to 10)  
-│   └── service.yaml           # Service for exposing Flask app  
+├── kubernetes/                # YAML configs for Kubernetes  
+│   ├── deployment.yaml         # Deployment (3 replicas by default)  
+│   ├── hpa.yaml                # Horizontal Pod Autoscaler (scales up to 10 pods)  
+│   └── service.yaml            # Exposes the Flask service  
 │  
-├── client/                    # Client-side load testing code  
-│   ├── client.py              # Request generator + response tracker  
-│   └── utils.py               # Utility functions (averages, writing output)  
+├── client/                    # Python client for load testing  
+│   ├── client.py               # Request generator  
+│   └── utils.py                # Utility functions (logging, metrics)  
 │  
-└── results/                   # Folder for test run outputs  
+└── results/                   # Stores output of tests  
     ├── docker_response_10  
     ├── docker_response_10000  
     ├── kubernetes_response_10  
@@ -48,15 +49,12 @@ assignment1/
 ---
 
 ## Architecture & Components
-- **app/** → Flask web service wrapped in Docker.  
-- **client/** → Python-based test client.  
-- **kubernetes/** → Deployment, Service, and Autoscaler configs (3–10 replicas).  
-- **results/** → Stores benchmarking logs from client runs.  
+- **app/** → Flask microservice packaged in Docker  
+- **client/** → Python client for sending load requests  
+- **kubernetes/** → Configs for Deployment, Service, and HPA  
+- **results/** → Output and logs from test executions  
 
 ---
-
-
-
 ## Key Workflows
 - **Build & Test Locally**:
   - Install Python dependencies: 
